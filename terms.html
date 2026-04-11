@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Términos de Uso — ClearLens</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Manrope:wght@200..800&display=swap" rel="stylesheet"/>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        "brand": "#0F6E56",
+        "brand-dark": "#064A3A",
+        "brand-light": "#12876A",
+        "brand-50": "#E1F5EE",
+        "text-muted": "#6B7872",
+        "border-light": "#D4DAD7",
+      },
+      fontFamily: {
+        "headline": ["Newsreader", "serif"],
+        "body": ["Manrope", "sans-serif"],
+      },
+    },
+  },
+}
+</script>
+<style>
+  body { font-family: "Manrope", sans-serif; }
+  h1, h2 { font-family: "Newsreader", serif; }
+</style>
+</head>
+<body class="bg-white text-gray-900 min-h-screen">
+
+<!-- Nav -->
+<header class="border-b border-border-light bg-white sticky top-0 z-10">
+  <div class="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="index.html" class="flex items-center gap-2 text-brand-dark hover:text-brand transition-colors">
+      <div class="w-7 h-7 rounded-lg bg-brand flex items-center justify-center">
+        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+        </svg>
+      </div>
+      <span class="font-headline italic text-lg font-semibold">ClearLens</span>
+    </a>
+    <a href="index.html" class="text-sm text-text-muted hover:text-brand-dark transition-colors">← Inicio</a>
+  </div>
+</header>
+
+<!-- Content -->
+<main class="max-w-3xl mx-auto px-6 py-12">
+  <h1 class="italic text-3xl font-semibold text-brand-dark mb-2">Términos de Uso</h1>
+  <p class="text-sm text-text-muted mb-10">Última actualización: abril de 2026</p>
+
+  <div class="prose prose-sm max-w-none space-y-8 text-gray-700 leading-relaxed">
+
+    <section>
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">1. Aceptación de los términos</h2>
+      <p>Al instalar o usar la extensión ClearLens, aceptas estos Términos de Uso. Si no estás de acuerdo, no uses el servicio.</p>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">2. Descripción del servicio</h2>
+      <p>ClearLens es una extensión de Chrome que analiza artículos de noticias usando inteligencia artificial para ofrecer contexto adicional, comparación de fuentes y detección de sesgo editorial. El servicio se ofrece en un plan gratuito (con límite mensual de análisis) y un plan Pro (análisis ilimitados).</p>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">3. Uso aceptable</h2>
+      <p>Aceptas usar ClearLens únicamente para fines legales y personales. Queda prohibido:</p>
+      <ul class="list-disc pl-5 space-y-2 mt-2">
+        <li>Intentar eludir los límites de uso del plan gratuito mediante cuentas múltiples o medios técnicos.</li>
+        <li>Usar el servicio para análisis masivo automatizado o scraping.</li>
+        <li>Revender o sublicenciar el acceso al servicio a terceros.</li>
+        <li>Usar el servicio para cualquier actividad ilegal o que viole derechos de terceros.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">4. Naturaleza del análisis — Limitación de responsabilidad</h2>
+      <p>Los análisis generados por ClearLens son producidos por inteligencia artificial y tienen carácter <strong>informativo y orientativo</strong>. No constituyen verdad absoluta, asesoramiento profesional ni opinión editorial de ClearLens.</p>
+      <p class="mt-2">ClearLens no garantiza la exactitud, completitud o actualidad de los análisis. Las decisiones que tomes basándote en ellos son de tu exclusiva responsabilidad. ClearLens no se hace responsable de daños directos o indirectos derivados del uso de la información proporcionada.</p>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">5. Planes y pagos</h2>
+      <ul class="list-disc pl-5 space-y-2">
+        <li><strong>Plan gratuito:</strong> incluye hasta 5 análisis por mes calendario. Los análisis no utilizados no se acumulan al mes siguiente.</li>
+        <li><strong>Plan Pro:</strong> análisis ilimitados, acceso a la matriz completa de cobertura, análisis de sesgo detallado y findings completos. El cobro es mensual o anual según el plan elegido.</li>
+        <li><strong>Pagos:</strong> gestionados por Stripe. Al suscribirte, aceptas también los <a href="https://stripe.com/legal/ssa" target="_blank" class="text-brand hover:underline">Términos de Servicio de Stripe</a>.</li>
+        <li><strong>Cancelación:</strong> puedes cancelar tu suscripción en cualquier momento. El acceso Pro se mantiene hasta el final del período ya pagado.</li>
+        <li><strong>Reembolsos:</strong> no ofrecemos reembolsos por períodos parciales, salvo requerimiento legal aplicable.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">6. Propiedad intelectual</h2>
+      <p>ClearLens y todos sus elementos (marca, diseño, código fuente, textos) son propiedad de sus desarrolladores. No se concede ninguna licencia para reproducir, modificar o distribuir el servicio o sus componentes sin autorización expresa.</p>
+      <p class="mt-2">El contenido de los artículos que analizas pertenece a sus respectivos autores y medios. ClearLens no reclama ningún derecho sobre dicho contenido.</p>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">7. Privacidad</h2>
+      <p>El tratamiento de tus datos personales se rige por nuestra <a href="privacy.html" class="text-brand hover:underline">Política de Privacidad</a>, que forma parte integrante de estos términos.</p>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">8. Modificaciones del servicio</h2>
+      <p>Nos reservamos el derecho de modificar, suspender o discontinuar el servicio (o cualquier parte de él) en cualquier momento, con o sin previo aviso. No seremos responsables ante ti ni ante terceros por dichas modificaciones.</p>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">9. Cambios en los términos</h2>
+      <p>Podemos actualizar estos términos periódicamente. Te notificaremos los cambios relevantes publicando la nueva versión en esta página. El uso continuado del servicio tras la publicación implica aceptación de los nuevos términos.</p>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">10. Ley aplicable</h2>
+      <p>Estos términos se rigen por las leyes de la República de Chile. Cualquier disputa se someterá a los tribunales competentes de Santiago de Chile.</p>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">11. Contacto</h2>
+      <p>Para cualquier consulta sobre estos términos: <a href="mailto:hello@clearlens.app" class="text-brand hover:underline">hello@clearlens.app</a></p>
+    </section>
+
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="border-t border-border-light bg-white mt-16">
+  <div class="max-w-3xl mx-auto px-6 py-6 flex flex-wrap items-center justify-between gap-4">
+    <p class="text-xs text-text-muted">© 2026 ClearLens</p>
+    <div class="flex gap-4">
+      <a href="privacy.html" class="text-xs text-text-muted hover:text-brand-dark transition-colors">Privacidad</a>
+      <a href="terms.html" class="text-xs text-brand font-semibold">Términos</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

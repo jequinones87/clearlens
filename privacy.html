@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Política de Privacidad — ClearLens</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Manrope:wght@200..800&display=swap" rel="stylesheet"/>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        "brand": "#0F6E56",
+        "brand-dark": "#064A3A",
+        "brand-light": "#12876A",
+        "brand-50": "#E1F5EE",
+        "text-muted": "#6B7872",
+        "border-light": "#D4DAD7",
+      },
+      fontFamily: {
+        "headline": ["Newsreader", "serif"],
+        "body": ["Manrope", "sans-serif"],
+      },
+    },
+  },
+}
+</script>
+<style>
+  body { font-family: "Manrope", sans-serif; }
+  h1, h2 { font-family: "Newsreader", serif; }
+</style>
+</head>
+<body class="bg-white text-gray-900 min-h-screen">
+
+<!-- Nav -->
+<header class="border-b border-border-light bg-white sticky top-0 z-10">
+  <div class="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="index.html" class="flex items-center gap-2 text-brand-dark hover:text-brand transition-colors">
+      <div class="w-7 h-7 rounded-lg bg-brand flex items-center justify-center">
+        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+        </svg>
+      </div>
+      <span class="font-headline italic text-lg font-semibold">ClearLens</span>
+    </a>
+    <a href="index.html" class="text-sm text-text-muted hover:text-brand-dark transition-colors">← Inicio</a>
+  </div>
+</header>
+
+<!-- Content -->
+<main class="max-w-3xl mx-auto px-6 py-12">
+  <h1 class="italic text-3xl font-semibold text-brand-dark mb-2">Política de Privacidad</h1>
+  <p class="text-sm text-text-muted mb-10">Última actualización: abril de 2026</p>
+
+  <div class="prose prose-sm max-w-none space-y-8 text-gray-700 leading-relaxed">
+
+    <section>
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">1. Quién somos</h2>
+      <p>ClearLens es una extensión de Chrome que ayuda a los usuarios a verificar y contextualizar noticias. El responsable del tratamiento de datos es el desarrollador individual detrás de ClearLens ("nosotros", "nuestro").</p>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">2. Datos que recopilamos</h2>
+      <ul class="list-disc pl-5 space-y-2">
+        <li><strong>Cuenta:</strong> dirección de correo electrónico al registrarte (email/password o Google OAuth).</li>
+        <li><strong>Contenido analizado:</strong> el texto o URL del artículo que envías para análisis. Este contenido se procesa para generar el informe y puede almacenarse en caché hasta 24 horas para evitar análisis duplicados.</li>
+        <li><strong>Datos de uso:</strong> número de análisis realizados en el período actual (contador mensual), necesario para aplicar el límite del plan gratuito.</li>
+        <li><strong>Datos de pago:</strong> gestionados íntegramente por Stripe. No almacenamos números de tarjeta ni datos bancarios. Solo guardamos el <code>stripe_customer_id</code> asociado a tu cuenta.</li>
+        <li><strong>Preferencias:</strong> idioma seleccionado (ES/EN/PT), guardado localmente en tu navegador.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">3. Cómo usamos los datos</h2>
+      <ul class="list-disc pl-5 space-y-2">
+        <li>Autenticar tu sesión y mantener tu cuenta activa.</li>
+        <li>Procesar los artículos que envías para generar análisis de veracidad y sesgo.</li>
+        <li>Controlar el límite mensual de análisis según tu plan.</li>
+        <li>Gestionar suscripciones y pagos a través de Stripe.</li>
+        <li>No usamos tus datos para publicidad ni los vendemos a terceros.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">4. Terceros que intervienen</h2>
+      <ul class="list-disc pl-5 space-y-2">
+        <li><strong>Supabase</strong> (supabase.com): base de datos y autenticación. Actúa como encargado del tratamiento bajo nuestra instrucción.</li>
+        <li><strong>Anthropic / Claude API</strong> (anthropic.com): el texto del artículo se envía a la API de Anthropic para generar el análisis. Anthropic procesa los datos conforme a su propia política de privacidad.</li>
+        <li><strong>GNews API / Google News RSS</strong>: se consultan para buscar cobertura de medios adicionales sobre el artículo analizado. Solo se transmite el tema o título de la noticia, no datos personales.</li>
+        <li><strong>Stripe</strong> (stripe.com): procesamiento de pagos. Sujeto a la política de privacidad de Stripe.</li>
+        <li><strong>Google Fonts</strong>: fuentes tipográficas cargadas en el landing page.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">5. Almacenamiento y seguridad</h2>
+      <p>Los datos se almacenan en servidores de Supabase (región US East). La sesión de usuario se guarda localmente en <code>chrome.storage.local</code> de tu navegador — no en servidores de terceros. Los tokens de acceso se renuevan automáticamente y nunca se exponen en la URL.</p>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">6. Retención de datos</h2>
+      <ul class="list-disc pl-5 space-y-2">
+        <li>Los análisis en caché se eliminan automáticamente después de 24 horas.</li>
+        <li>Los datos de cuenta se conservan mientras tu cuenta esté activa.</li>
+        <li>Al eliminar tu cuenta, tus datos personales se eliminan de nuestra base de datos en un plazo de 30 días.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">7. Tus derechos</h2>
+      <p>Tienes derecho a acceder, rectificar o eliminar tus datos personales. Para ejercer cualquiera de estos derechos, contáctanos en la dirección indicada al final de este documento.</p>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">8. Cookies</h2>
+      <p>ClearLens no usa cookies propias de seguimiento. El landing page puede cargar fuentes desde Google Fonts, que puede establecer cookies según su propia política.</p>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">9. Cambios en esta política</h2>
+      <p>Notificaremos cualquier cambio relevante publicando la nueva versión en esta página con la fecha actualizada. Te recomendamos revisarla periódicamente.</p>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-semibold text-gray-900 mb-3">10. Contacto</h2>
+      <p>Si tienes preguntas sobre esta política de privacidad, puedes contactarnos en: <a href="mailto:hello@clearlens.app" class="text-brand hover:underline">hello@clearlens.app</a></p>
+    </section>
+
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="border-t border-border-light bg-white mt-16">
+  <div class="max-w-3xl mx-auto px-6 py-6 flex flex-wrap items-center justify-between gap-4">
+    <p class="text-xs text-text-muted">© 2026 ClearLens</p>
+    <div class="flex gap-4">
+      <a href="privacy.html" class="text-xs text-brand font-semibold">Privacidad</a>
+      <a href="terms.html" class="text-xs text-text-muted hover:text-brand-dark transition-colors">Términos</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

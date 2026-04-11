@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ClearLens — Ve la noticia completa</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Manrope:wght@200..800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "brand": "#0F6E56",
+        "brand-dark": "#064A3A",
+        "brand-deeper": "#03332A",
+        "brand-light": "#1D9E75",
+        "brand-50": "#E1F5EE",
+        "brand-100": "#B3E6D4",
+        "text-primary": "#111816",
+        "text-body": "#2A3530",
+        "text-secondary": "#4A5650",
+        "text-muted": "#6B7872",
+        "surface": "#F5F7F5",
+        "surface-warm": "#F0F2F0",
+        "surface-card": "#FFFFFF",
+        "surface-dim": "#E6E9E6",
+        "surface-panel": "#FAFBFA",
+        "border-light": "#D4DAD7",
+        "border-default": "#BFC7C3",
+        "coral": "#C24B1A",
+        "coral-dark": "#8E3510",
+        "coral-50": "#FDF0EB",
+        "amber": "#946010",
+        "amber-dark": "#6B450A",
+        "amber-50": "#FDF4E4",
+        "purple": "#4338A0",
+        "purple-dark": "#2D2570",
+        "purple-50": "#EEECFD",
+        "red-bias": "#A32D2D",
+        "blue-bias": "#2D5BA3",
+      },
+      fontFamily: {
+        "headline": ["Newsreader", "serif"],
+        "body": ["Manrope", "sans-serif"],
+      },
+    },
+  },
+}
+</script>
+<style>
+* { box-sizing: border-box; }
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+.editorial-shadow {
+  box-shadow: 0 8px 40px -4px rgba(17, 24, 22, 0.10), 0 2px 8px -2px rgba(17, 24, 22, 0.06);
+}
+.card-shadow {
+  box-shadow: 0 2px 12px -2px rgba(17, 24, 22, 0.08);
+}
+.jewel-button {
+  background: linear-gradient(135deg, #064A3A 0%, #0F6E56 100%);
+}
+.jewel-button:hover {
+  background: linear-gradient(135deg, #03332A 0%, #0A5C48 100%);
+}
+.lang-btn { transition: all 0.15s; }
+.lang-btn.active { background: #064A3A; color: #fff; }
+
+/* Accordion hero */
+.acc-panel {
+  transition: flex 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              min-width 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              max-width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  cursor: pointer;
+}
+.acc-panel.active  { flex: 4 1 0%; min-width: 0; }
+.acc-panel.inactive { flex: 0 0 60px; min-width: 60px; max-width: 60px; }
+.acc-panel img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.acc-panel:hover img { transform: scale(1.04); }
+.acc-panel .overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(3,51,42,0.80) 0%, rgba(3,51,42,0.15) 60%, transparent 100%);
+}
+.acc-panel .vertical-label {
+  position: absolute;
+  bottom: 5rem; left: 50%;
+  transform: translateX(-50%) rotate(90deg);
+  transform-origin: center center;
+  white-space: nowrap;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.75);
+  text-transform: uppercase;
+  transition: opacity 0.3s;
+}
+.acc-panel.active .vertical-label { opacity: 0; pointer-events: none; }
+.acc-panel .caption {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 1.25rem;
+  transition: opacity 0.35s 0.1s, transform 0.35s 0.1s;
+}
+.acc-panel.inactive .caption { opacity: 0; transform: translateY(8px); pointer-events: none; }
+
+/* Popup mockup */
+.popup-shell {
+  font-family: 'Manrope', sans-serif;
+  width: 380px;
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 1px solid #D4DAD7;
+  box-shadow: 0 20px 60px -8px rgba(17,24,22,0.18), 0 4px 16px -4px rgba(17,24,22,0.10);
+  background: #fff;
+}
+
+/* Feature cards */
+.feature-card {
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+.feature-card:hover {
+  border-color: #0F6E56;
+  box-shadow: 0 8px 32px -8px rgba(15, 110, 86, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Stat items */
+.stat-bar {
+  height: 3px;
+  border-radius: 99px;
+  background: #E1F5EE;
+  overflow: hidden;
+}
+.stat-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #0F6E56, #1D9E75);
+}
+
+/* Testimonial */
+.testimonial-card {
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.testimonial-card:hover {
+  box-shadow: 0 8px 32px -8px rgba(17,24,22,0.12);
+  transform: translateY(-2px);
+}
+
+/* Billing toggle */
+.billing-btn {
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.billing-btn.active {
+  background: #064A3A;
+  color: #fff;
+  box-shadow: 0 2px 8px -2px rgba(6,74,58,0.25);
+}
+</style>
+</head>
+<body class="bg-surface font-body text-text-body">
+
+<!-- Nav -->
+<nav class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-border-light">
+  <div class="flex justify-between items-center px-6 py-3.5 max-w-7xl mx-auto">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-lg jewel-button flex items-center justify-center">
+        <span class="material-symbols-outlined text-white text-lg">search</span>
+      </div>
+      <span class="text-xl font-semibold italic text-brand-deeper font-headline">ClearLens</span>
+    </div>
+    <div class="hidden md:flex items-center gap-8">
+      <a class="text-text-secondary hover:text-brand-dark transition-colors text-sm font-semibold" href="#how" data-i18n="navHow">Cómo funciona</a>
+      <a class="text-text-secondary hover:text-brand-dark transition-colors text-sm font-semibold" href="#features" data-i18n="navFeatures">Funcionalidades</a>
+      <a class="text-text-secondary hover:text-brand-dark transition-colors text-sm font-semibold" href="#pricing" data-i18n="navPricing">Planes</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="flex items-center bg-surface-dim rounded-lg p-0.5 gap-0.5">
+        <button onclick="setLang('es')" class="lang-btn active px-2.5 py-1 rounded-md text-xs font-bold">ES</button>
+        <button onclick="setLang('en')" class="lang-btn px-2.5 py-1 rounded-md text-xs font-bold text-text-muted">EN</button>
+        <button onclick="setLang('pt')" class="lang-btn px-2.5 py-1 rounded-md text-xs font-bold text-text-muted">PT</button>
+      </div>
+      <a href="#" class="jewel-button text-white px-5 py-2.5 rounded-xl font-bold text-sm active:scale-95 transition-transform chrome-store-link">
+        <span data-i18n="navCta">Instalar gratis</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="pt-20">
+
+<!-- ═══════════════════════════════════════════
+     HERO — split: texto izquierda + accordion derecha
+     ═══════════════════════════════════════════ -->
+<section class="max-w-7xl mx-auto px-6 py-20 lg:py-28">
+  <div class="flex flex-col lg:flex-row items-center gap-16 lg:gap-20">
+
+    <!-- Left: copy — ancho fijo para que el accordion no lo afecte -->
+    <div class="w-full lg:w-[46%] flex-shrink-0 flex flex-col items-start">
+      <span class="font-body text-xs uppercase tracking-[0.2em] text-brand-dark font-extrabold mb-6 bg-brand-50 px-4 py-1.5 rounded-full" data-i18n="heroBadge">Extensión de Chrome</span>
+      <h1 class="font-headline text-5xl md:text-6xl xl:text-7xl text-text-primary leading-[1.05] mb-7 italic" data-i18n-html="heroTitle">
+        No leas una noticia.<br/>Lee <em class="text-brand-dark">todas</em> las versiones.
+      </h1>
+      <p class="font-body text-lg text-text-secondary mb-10 leading-relaxed font-medium max-w-lg" data-i18n="heroSub">
+        ClearLens compara tu noticia con múltiples fuentes en segundos. Detecta qué omiten, qué enfatizan y qué dicen diferente.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 mb-6 w-full sm:w-auto">
+        <a href="#" class="jewel-button text-white px-8 py-4 rounded-xl font-bold text-base active:scale-95 transition-transform flex items-center justify-center gap-3 shadow-lg shadow-brand/20 chrome-store-link">
+          <span class="material-symbols-outlined text-xl">add_circle</span>
+          <span data-i18n="heroCta">Agregar a Chrome — gratis</span>
+        </a>
+        <a href="#how" class="bg-white text-text-primary px-8 py-4 rounded-xl font-bold text-base hover:bg-surface-dim transition-colors border border-border-default text-center">
+          <span data-i18n="heroCtaSecondary">Ver cómo funciona</span>
+        </a>
+      </div>
+      <p class="text-sm text-text-muted font-medium" data-i18n="heroNote">Funciona en cualquier sitio.</p>
+
+      <!-- Mini stats row -->
+      <div class="mt-10 pt-8 border-t border-border-light w-full flex gap-8">
+        <div>
+          <div class="text-2xl font-headline font-bold text-text-primary mb-0.5">8+</div>
+          <div class="text-xs text-text-muted font-semibold uppercase tracking-wide" data-i18n="statSources">Fuentes por análisis</div>
+        </div>
+        <div class="w-px bg-border-light"></div>
+        <div>
+          <div class="text-2xl font-headline font-bold text-text-primary mb-0.5">&lt;5s</div>
+          <div class="text-xs text-text-muted font-semibold uppercase tracking-wide" data-i18n="statSpeed">Tiempo de respuesta</div>
+        </div>
+        <div class="w-px bg-border-light"></div>
+        <div>
+          <div class="text-2xl font-headline font-bold text-text-primary mb-0.5">3</div>
+          <div class="text-xs text-text-muted font-semibold uppercase tracking-wide" data-i18n="statLangs">Idiomas</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: interactive image accordion — ancho fijo para no afectar la columna izquierda -->
+    <div class="w-full lg:flex-1 flex items-center justify-center lg:justify-end overflow-hidden">
+      <div class="flex flex-row gap-3 h-[480px] w-full max-w-[640px]" id="accordion">
+
+        <!-- Panel 1 -->
+        <div class="acc-panel active" data-index="0" onmouseenter="activatePanel(0)">
+          <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=2070&auto=format&fit=crop" alt="Fuentes de noticias"/>
+          <div class="overlay"></div>
+          <div class="vertical-label" data-i18n="acc1Label">Fuentes</div>
+          <div class="caption">
+            <span class="inline-flex items-center gap-1.5 bg-brand/90 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full mb-2">
+              <span class="material-symbols-outlined text-sm" style="font-size:14px;">compare_arrows</span>
+              <span data-i18n="acc1Tag">Comparación cruzada</span>
+            </span>
+            <div class="text-white font-headline italic text-xl leading-snug" data-i18n="acc1Title">Hasta 8 fuentes analizadas por noticia</div>
+            <div class="text-white/70 text-xs mt-1 font-medium leading-relaxed" data-i18n="acc1Desc">Reuters, BBC, medios locales y más — todos comparados automáticamente.</div>
+          </div>
+        </div>
+
+        <!-- Panel 2 -->
+        <div class="acc-panel inactive" data-index="1" onmouseenter="activatePanel(1)">
+          <img src="https://images.unsplash.com/photo-1495020689067-958852a7765e?q=80&w=2069&auto=format&fit=crop" alt="Análisis editorial"/>
+          <div class="overlay"></div>
+          <div class="vertical-label" data-i18n="acc2Label">Sesgo</div>
+          <div class="caption">
+            <span class="inline-flex items-center gap-1.5 bg-brand/90 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full mb-2">
+              <span class="material-symbols-outlined text-sm" style="font-size:14px;">trending_up</span>
+              <span data-i18n="acc2Tag">Sesgo editorial</span>
+            </span>
+            <div class="text-white font-headline italic text-xl leading-snug" data-i18n="acc2Title">Detecta el sesgo que los medios no declaran</div>
+            <div class="text-white/70 text-xs mt-1 font-medium leading-relaxed" data-i18n="acc2Desc">Spectrum visual de izquierda a derecha con explicación del análisis.</div>
+          </div>
+        </div>
+
+        <!-- Panel 3 -->
+        <div class="acc-panel inactive" data-index="2" onmouseenter="activatePanel(2)">
+          <img src="https://images.unsplash.com/photo-1585829365295-ab7cd400c167?q=80&w=2070&auto=format&fit=crop" alt="Información que falta"/>
+          <div class="overlay"></div>
+          <div class="vertical-label" data-i18n="acc3Label">Omisiones</div>
+          <div class="caption">
+            <span class="inline-flex items-center gap-1.5 bg-brand/90 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full mb-2">
+              <span class="material-symbols-outlined text-sm" style="font-size:14px;">visibility_off</span>
+              <span data-i18n="acc3Tag">Información faltante</span>
+            </span>
+            <div class="text-white font-headline italic text-xl leading-snug" data-i18n="acc3Title">Lo que tu medio no te cuenta</div>
+            <div class="text-white/70 text-xs mt-1 font-medium leading-relaxed" data-i18n="acc3Desc">Hallazgos clave que solo uno o dos medios reportaron.</div>
+          </div>
+        </div>
+
+        <!-- Panel 4 -->
+        <div class="acc-panel inactive" data-index="3" onmouseenter="activatePanel(3)">
+          <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop" alt="Cobertura global"/>
+          <div class="overlay"></div>
+          <div class="vertical-label" data-i18n="acc4Label">Cobertura</div>
+          <div class="caption">
+            <span class="inline-flex items-center gap-1.5 bg-brand/90 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full mb-2">
+              <span class="material-symbols-outlined text-sm" style="font-size:14px;">public</span>
+              <span data-i18n="acc4Tag">Cobertura global</span>
+            </span>
+            <div class="text-white font-headline italic text-xl leading-snug" data-i18n="acc4Title">Perspectiva local e internacional</div>
+            <div class="text-white/70 text-xs mt-1 font-medium leading-relaxed" data-i18n="acc4Desc">Compara cómo se cubre la misma noticia en distintos países.</div>
+          </div>
+        </div>
+
+        <!-- Panel 5 -->
+        <div class="acc-panel inactive" data-index="4" onmouseenter="activatePanel(4)">
+          <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2070&auto=format&fit=crop" alt="Análisis IA"/>
+          <div class="overlay"></div>
+          <div class="vertical-label" data-i18n="acc5Label">IA</div>
+          <div class="caption">
+            <span class="inline-flex items-center gap-1.5 bg-brand/90 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full mb-2">
+              <span class="material-symbols-outlined text-sm" style="font-size:14px;">psychology</span>
+              <span data-i18n="acc5Tag">IA de análisis</span>
+            </span>
+            <div class="text-white font-headline italic text-xl leading-snug" data-i18n="acc5Title">ClearLens analiza, no adivina</div>
+            <div class="text-white/70 text-xs mt-1 font-medium leading-relaxed" data-i18n="acc5Desc">Modelo de lenguaje de última generación entrenado para análisis periodístico.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     POPUP MOCKUP — centered, floating
+     ═══════════════════════════════════════════ -->
+<section class="bg-white border-y border-border-light py-20 px-6">
+  <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16">
+
+    <!-- Left: popup -->
+    <div class="flex justify-center w-full lg:w-auto">
+      <div class="popup-shell">
+        <!-- Header -->
+        <div class="flex items-center justify-between px-4 py-3 border-b border-border-light bg-white">
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-6 rounded bg-brand flex items-center justify-center">
+              <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+              </svg>
+            </div>
+            <span class="font-headline italic text-lg font-semibold text-brand-dark" style="font-family:'Newsreader',serif;">ClearLens</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <div class="flex items-center gap-0.5 bg-gray-100 rounded-md p-0.5">
+              <span class="px-2 py-0.5 rounded text-xs font-semibold bg-white text-brand-dark shadow-sm">ES</span>
+              <span class="px-2 py-0.5 rounded text-xs font-medium text-gray-400">EN</span>
+              <span class="px-2 py-0.5 rounded text-xs font-medium text-gray-400">PT</span>
+            </div>
+            <div class="w-7 h-7 rounded-full bg-brand flex items-center justify-center text-xs font-semibold text-white">JE</div>
+          </div>
+        </div>
+        <!-- Tab bar -->
+        <div class="flex border-b border-border-light bg-white">
+          <div class="flex-1 py-2 text-sm font-semibold text-center text-brand border-b-2 border-brand" data-i18n="tabAuto">Automático</div>
+          <div class="flex-1 py-2 text-sm font-medium text-center text-gray-400" data-i18n="tabManual">Manual</div>
+        </div>
+        <!-- Results body -->
+        <div class="flex flex-col gap-3 p-4 bg-white">
+          <div class="flex items-center justify-between">
+            <button class="text-xs text-gray-400 flex items-center gap-1">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+              <span data-i18n="back">Volver</span>
+            </button>
+            <span class="text-xs text-gray-400">8 <span data-i18n="sourcesAnalyzed">fuentes analizadas</span></span>
+          </div>
+          <!-- Score -->
+          <div class="p-3 rounded-lg bg-gray-50 flex items-center gap-3">
+            <div class="relative w-12 h-12 flex-shrink-0">
+              <svg class="w-12 h-12 -rotate-90" viewBox="0 0 36 36">
+                <circle cx="18" cy="18" r="15.5" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+                <circle cx="18" cy="18" r="15.5" fill="none" stroke="#059669" stroke-width="3" stroke-dasharray="67.8 97.4" stroke-linecap="round"/>
+              </svg>
+              <span class="absolute inset-0 flex items-center justify-center text-sm font-bold text-emerald-600">7</span>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-emerald-600" data-i18n="mockupScore">Buena cobertura</p>
+              <p class="text-xs text-gray-400" data-i18n="outOf10">de 10 posibles</p>
+            </div>
+          </div>
+          <!-- Sources -->
+          <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider" data-i18n="mockupSourcesTitle">Fuentes encontradas</h3>
+          <div class="flex flex-col gap-2">
+            <div class="p-2.5 rounded-lg border border-gray-100">
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-sm font-medium text-gray-900">La Tercera</span>
+                <span class="inline-flex px-1.5 py-0.5 rounded text-[11px] font-medium bg-emerald-50 text-emerald-700" data-i18n="tagMatch">Coincide</span>
+              </div>
+              <p class="text-xs text-gray-500 leading-relaxed" data-i18n="mockupSource1">Confirma datos centrales, agrega impacto en PyMEs</p>
+            </div>
+            <div class="p-2.5 rounded-lg border border-gray-100">
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-sm font-medium text-gray-900">BioBio Chile</span>
+                <span class="inline-flex px-1.5 py-0.5 rounded text-[11px] font-medium bg-amber-50 text-amber-700" data-i18n="tagDifferent">Enfoque distinto</span>
+              </div>
+              <p class="text-xs text-gray-500 leading-relaxed" data-i18n="mockupSource2">Se enfoca en críticas de la oposición, omite datos de recaudación</p>
+            </div>
+            <div class="p-2.5 rounded-lg border border-gray-100">
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-sm font-medium text-gray-900">El Mostrador</span>
+                <span class="inline-flex px-1.5 py-0.5 rounded text-[11px] font-medium bg-purple-50 text-purple-700" data-i18n="tagExclusive">Info exclusiva</span>
+              </div>
+              <p class="text-xs text-gray-500 leading-relaxed" data-i18n="mockupSource3">Menciona cláusula de reinversión no reportada por otros medios</p>
+            </div>
+          </div>
+          <!-- Bias -->
+          <div class="p-3 rounded-lg bg-gray-50">
+            <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3" data-i18n="mockupBias">Sesgo editorial</h3>
+            <div class="flex justify-between text-[10px] text-gray-400 uppercase tracking-wider mb-1.5">
+              <span data-i18n="biasLeft">Izquierda</span>
+              <span data-i18n="biasCenter">Centro</span>
+              <span data-i18n="biasRight">Derecha</span>
+            </div>
+            <div class="relative h-2 rounded-full bg-gradient-to-r from-red-200 via-gray-200 to-blue-200">
+              <div class="absolute left-1/2 top-0 -translate-x-px w-0.5 h-2 bg-gray-400/40"></div>
+              <div class="absolute top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-white border-2 border-brand shadow-sm" style="left:40%;margin-left:-7px;"></div>
+            </div>
+            <p class="text-xs text-gray-500 mt-2 leading-relaxed" data-i18n="mockupBiasExpl">Cobertura mayoritariamente centrada, con leve énfasis en perspectiva gubernamental.</p>
+          </div>
+          <button class="w-full py-2.5 rounded-lg border-2 border-brand text-brand text-sm font-semibold" data-i18n="viewDetail">Ver análisis completo →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: explanation text -->
+    <div class="flex-1 max-w-xl">
+      <span class="font-body text-xs uppercase tracking-[0.2em] text-brand-dark font-extrabold mb-5 block" data-i18n="mockupSectionLabel">La extensión, en acción</span>
+      <h2 class="font-headline text-4xl md:text-5xl italic text-text-primary mb-6 leading-tight" data-i18n="mockupSectionTitle">Así se ve cuando abres ClearLens</h2>
+      <p class="text-text-secondary font-medium leading-relaxed mb-8" data-i18n="mockupSectionDesc">En segundos tienes el puntaje de cobertura, las fuentes encontradas con su enfoque, el sesgo editorial detectado y los hallazgos que solo un medio reportó.</p>
+      <div class="space-y-4 mt-2">
+        <div class="flex items-center gap-5 p-5 bg-surface rounded-2xl border border-border-light">
+          <div class="w-14 h-14 rounded-2xl bg-brand-50 border border-brand-100 flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-brand-dark" style="font-size:28px;">query_stats</span>
+          </div>
+          <div>
+            <div class="font-semibold text-text-primary text-base mb-1" data-i18n="mockupPoint1Title">Puntaje de cobertura</div>
+            <div class="text-text-secondary text-sm leading-relaxed" data-i18n="mockupPoint1Desc">Cuánto cubre tu fuente versus el consenso de medios disponibles.</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-5 p-5 bg-surface rounded-2xl border border-border-light">
+          <div class="w-14 h-14 rounded-2xl bg-brand-50 border border-brand-100 flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-brand-dark" style="font-size:28px;">compare_arrows</span>
+          </div>
+          <div>
+            <div class="font-semibold text-text-primary text-base mb-1" data-i18n="mockupPoint2Title">Fuentes clasificadas</div>
+            <div class="text-text-secondary text-sm leading-relaxed" data-i18n="mockupPoint2Desc">Coincide, enfoque distinto o información exclusiva — de un vistazo.</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-5 p-5 bg-surface rounded-2xl border border-border-light">
+          <div class="w-14 h-14 rounded-2xl bg-brand-50 border border-brand-100 flex items-center justify-center flex-shrink-0">
+            <span class="material-symbols-outlined text-brand-dark" style="font-size:28px;">trending_flat</span>
+          </div>
+          <div>
+            <div class="font-semibold text-text-primary text-base mb-1" data-i18n="mockupPoint3Title">Espectro de sesgo</div>
+            <div class="text-text-secondary text-sm leading-relaxed" data-i18n="mockupPoint3Desc">Visualización del posicionamiento editorial de la cobertura analizada.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     HOW IT WORKS
+     ═══════════════════════════════════════════ -->
+<section class="py-28 px-6" id="how">
+  <div class="max-w-7xl mx-auto text-center mb-16">
+    <span class="font-body text-xs uppercase tracking-[0.2em] text-brand-dark font-extrabold mb-4 block" data-i18n="howLabel">Cómo funciona</span>
+    <h2 class="font-headline text-4xl md:text-5xl italic text-text-primary" data-i18n="howTitle">Tres pasos. Cinco segundos. Todo el panorama.</h2>
+  </div>
+  <div class="max-w-5xl mx-auto grid md:grid-cols-3 gap-8">
+    <div class="bg-white rounded-2xl p-8 border border-border-light card-shadow flex flex-col items-center text-center feature-card">
+      <div class="w-16 h-16 rounded-2xl bg-brand-50 flex items-center justify-center mb-6 border border-brand-100">
+        <span class="material-symbols-outlined text-3xl text-brand-dark">language</span>
+      </div>
+      <div class="text-xs font-extrabold uppercase tracking-[0.15em] text-brand-dark mb-3">01</div>
+      <h3 class="font-headline text-xl mb-3 text-text-primary" data-i18n="step1Title">Lee cualquier noticia</h3>
+      <p class="text-text-secondary text-sm leading-relaxed font-medium" data-i18n="step1Desc">Navega como siempre. ClearLens funciona en cualquier sitio de noticias, blog o red social.</p>
+    </div>
+    <div class="bg-white rounded-2xl p-8 border border-border-light card-shadow flex flex-col items-center text-center feature-card">
+      <div class="w-16 h-16 rounded-2xl bg-brand-50 flex items-center justify-center mb-6 border border-brand-100">
+        <span class="material-symbols-outlined text-3xl text-brand-dark">ads_click</span>
+      </div>
+      <div class="text-xs font-extrabold uppercase tracking-[0.15em] text-brand-dark mb-3">02</div>
+      <h3 class="font-headline text-xl mb-3 text-text-primary" data-i18n="step2Title">Haz clic en ClearLens</h3>
+      <p class="text-text-secondary text-sm leading-relaxed font-medium" data-i18n="step2Desc">La extensión extrae el contenido automáticamente y busca la misma historia en otros medios.</p>
+    </div>
+    <div class="bg-white rounded-2xl p-8 border border-border-light card-shadow flex flex-col items-center text-center feature-card">
+      <div class="w-16 h-16 rounded-2xl bg-brand-50 flex items-center justify-center mb-6 border border-brand-100">
+        <span class="material-symbols-outlined text-3xl text-brand-dark">query_stats</span>
+      </div>
+      <div class="text-xs font-extrabold uppercase tracking-[0.15em] text-brand-dark mb-3">03</div>
+      <h3 class="font-headline text-xl mb-3 text-text-primary" data-i18n="step3Title">Ve lo que otros no muestran</h3>
+      <p class="text-text-secondary text-sm leading-relaxed font-medium" data-i18n="step3Desc">Descubre qué confirman otras fuentes, qué omiten, y cómo cambia el enfoque según el medio.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     FEATURES BENTO GRID
+     ═══════════════════════════════════════════ -->
+<section class="bg-white py-28 px-6 border-y border-border-light" id="features">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16">
+      <span class="font-body text-xs uppercase tracking-[0.2em] text-brand-dark font-extrabold mb-4 block" data-i18n="featuresLabel">Funcionalidades</span>
+      <h2 class="font-headline text-4xl md:text-5xl italic text-text-primary max-w-2xl mx-auto" data-i18n="featuresTitle">No te decimos qué pensar. Te mostramos qué falta.</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
+
+      <!-- Feature 1: Cross comparison (wide) -->
+      <div class="md:col-span-7 feature-card bg-surface rounded-2xl p-8 border border-border-light flex flex-col gap-6">
+        <div class="flex items-start gap-5">
+          <div class="w-11 h-11 rounded-xl bg-brand-50 flex items-center justify-center flex-shrink-0 border border-brand-100">
+            <span class="material-symbols-outlined text-brand-dark">compare_arrows</span>
+          </div>
+          <div>
+            <h3 class="font-headline text-2xl mb-2 text-text-primary" data-i18n="feat1Title">Comparación cruzada de fuentes</h3>
+            <p class="text-text-secondary text-sm leading-relaxed font-medium" data-i18n="feat1Desc">Encuentra automáticamente 3-8 medios que cubren la misma historia. Ve qué coincide, qué difiere y qué solo un medio reporta.</p>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-border-light card-shadow">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between py-1 border-b border-border-light/50 last:border-0">
+              <div class="flex items-center gap-2.5">
+                <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
+                <span class="text-sm font-semibold text-text-primary">Reuters</span>
+              </div>
+              <span class="bg-brand-50 text-brand-dark px-2.5 py-0.5 rounded-full text-[11px] font-extrabold" data-i18n="tagMatch2">Coincide</span>
+            </div>
+            <div class="flex items-center justify-between py-1 border-b border-border-light/50 last:border-0">
+              <div class="flex items-center gap-2.5">
+                <div class="w-2 h-2 rounded-full bg-amber-400"></div>
+                <span class="text-sm font-semibold text-text-primary">CNN Chile</span>
+              </div>
+              <span class="bg-amber-50 text-amber-dark px-2.5 py-0.5 rounded-full text-[11px] font-extrabold" data-i18n="tagDifferent2">Enfoque distinto</span>
+            </div>
+            <div class="flex items-center justify-between py-1 border-b border-border-light/50 last:border-0">
+              <div class="flex items-center gap-2.5">
+                <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
+                <span class="text-sm font-semibold text-text-primary">Cooperativa</span>
+              </div>
+              <span class="bg-brand-50 text-brand-dark px-2.5 py-0.5 rounded-full text-[11px] font-extrabold" data-i18n="tagMatch3">Coincide</span>
+            </div>
+            <div class="flex items-center justify-between py-1">
+              <div class="flex items-center gap-2.5">
+                <div class="w-2 h-2 rounded-full bg-purple-400"></div>
+                <span class="text-sm font-semibold text-text-primary">El Mostrador</span>
+              </div>
+              <span class="bg-purple-50 text-purple-dark px-2.5 py-0.5 rounded-full text-[11px] font-extrabold" data-i18n="tagExclusive2">Info exclusiva</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 2: Bias (tall right) -->
+      <div class="md:col-span-5 jewel-button text-white rounded-2xl p-8 flex flex-col justify-between min-h-[280px]">
+        <div class="w-11 h-11 rounded-xl bg-white/15 flex items-center justify-center border border-white/20">
+          <span class="material-symbols-outlined text-white text-2xl">trending_up</span>
+        </div>
+        <div>
+          <h3 class="font-headline text-2xl mb-3 italic" data-i18n="feat2Title">Detección de sesgo editorial</h3>
+          <p class="text-white/80 text-sm leading-relaxed font-medium" data-i18n="feat2Desc">Analiza el tono, las fuentes citadas y lo que se enfatiza versus lo que se minimiza para mostrar la orientación del artículo.</p>
+        </div>
+        <div class="mt-4">
+          <div class="flex justify-between text-[10px] text-white/60 uppercase tracking-wider mb-2">
+            <span data-i18n="biasLeft">Izquierda</span><span data-i18n="biasCenter">Centro</span><span data-i18n="biasRight">Derecha</span>
+          </div>
+          <div class="relative h-1.5 rounded-full bg-gradient-to-r from-red-300/60 via-white/20 to-blue-300/60">
+            <div class="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-white shadow-lg border-2 border-brand-dark" style="left:38%;margin-left:-8px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 3: Missing info -->
+      <div class="md:col-span-4 feature-card bg-surface rounded-2xl p-8 border border-border-light">
+        <div class="w-11 h-11 bg-coral-50 text-coral-dark rounded-xl flex items-center justify-center mb-5 border border-coral/10">
+          <span class="material-symbols-outlined">visibility_off</span>
+        </div>
+        <h3 class="font-headline text-2xl mb-3 text-text-primary" data-i18n="feat3Title">Información que falta</h3>
+        <p class="text-text-secondary text-sm leading-relaxed font-medium" data-i18n="feat3Desc">Identifica datos relevantes que el artículo original omite pero que otros medios sí incluyen. La omisión también cuenta una historia.</p>
+      </div>
+
+      <!-- Feature 4: Universal (wide) -->
+      <div class="md:col-span-8 feature-card bg-surface rounded-2xl p-8 flex flex-col md:flex-row gap-8 items-center border border-border-light">
+        <div class="flex-1">
+          <div class="w-11 h-11 rounded-xl bg-purple-50 flex items-center justify-center mb-5 border border-purple/10">
+            <span class="material-symbols-outlined text-purple-dark">select_all</span>
+          </div>
+          <h3 class="font-headline text-2xl mb-3 text-text-primary" data-i18n="feat4Title">Funciona en cualquier página</h3>
+          <p class="text-text-secondary text-sm leading-relaxed font-medium" data-i18n="feat4Desc">Noticias, blogs, posts de LinkedIn, hilos de X. Captura automática o selecciona cualquier texto y ClearLens lo verifica contra fuentes reales.</p>
+        </div>
+        <div class="flex flex-col items-center gap-3 py-4 flex-shrink-0">
+          <div class="flex gap-2">
+            <span class="bg-white border border-border-light px-3 py-1.5 rounded-lg text-[11px] font-bold text-text-secondary shadow-sm" data-i18n="feat4ModeAuto">Auto captura</span>
+            <span class="bg-brand-50 px-3 py-1.5 rounded-lg text-[11px] font-bold text-brand-dark border border-brand-100" data-i18n="feat4Mode">Seleccionar texto</span>
+          </div>
+          <span class="material-symbols-outlined text-5xl text-brand/20">hub</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SOCIAL PROOF
+     ═══════════════════════════════════════════ -->
+<section class="py-28 px-6">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16">
+      <span class="font-body text-xs uppercase tracking-[0.2em] text-brand-dark font-extrabold mb-4 block" data-i18n="testimonialsLabel">Testimonios</span>
+      <h2 class="font-headline text-4xl md:text-5xl italic text-text-primary" data-i18n="testimonialsTitle">Lo que dicen los lectores</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="testimonial-card bg-white rounded-2xl p-7 border border-border-light card-shadow">
+        <div class="flex gap-0.5 mb-4">
+          <span class="text-amber-400 text-sm">★★★★★</span>
+        </div>
+        <p class="text-text-body text-sm leading-relaxed mb-5 font-medium italic" data-i18n="test1">"Ahora no puedo leer noticias sin ClearLens. Descubrí que el medio que más leo consistentemente omite la mitad del contexto."</p>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-brand-50 border border-brand-100 flex items-center justify-center text-xs font-bold text-brand-dark">MC</div>
+          <div>
+            <div class="text-sm font-semibold text-text-primary" data-i18n="test1Name">Mariana C.</div>
+            <div class="text-xs text-text-muted" data-i18n="test1Role">Periodista, Santiago</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card bg-white rounded-2xl p-7 border border-border-light card-shadow">
+        <div class="flex gap-0.5 mb-4">
+          <span class="text-amber-400 text-sm">★★★★★</span>
+        </div>
+        <p class="text-text-body text-sm leading-relaxed mb-5 font-medium italic" data-i18n="test2">"Usarlo toma 5 segundos y cambia completamente cómo proceso la información. El sesgo editorial nunca había sido tan visible."</p>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-brand-50 border border-brand-100 flex items-center justify-center text-xs font-bold text-brand-dark">RA</div>
+          <div>
+            <div class="text-sm font-semibold text-text-primary" data-i18n="test2Name">Ricardo A.</div>
+            <div class="text-xs text-text-muted" data-i18n="test2Role">Investigador, Buenos Aires</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card bg-white rounded-2xl p-7 border border-border-light card-shadow">
+        <div class="flex gap-0.5 mb-4">
+          <span class="text-amber-400 text-sm">★★★★★</span>
+        </div>
+        <p class="text-text-body text-sm leading-relaxed mb-5 font-medium italic" data-i18n="test3">"La herramienta que necesitaba para mis clases de pensamiento crítico. Mis estudiantes no pueden creer lo diferente que es la misma noticia."</p>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-brand-50 border border-brand-100 flex items-center justify-center text-xs font-bold text-brand-dark">LP</div>
+          <div>
+            <div class="text-sm font-semibold text-text-primary" data-i18n="test3Name">Laura P.</div>
+            <div class="text-xs text-text-muted" data-i18n="test3Role">Docente universitaria, México</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     PRICING
+     ═══════════════════════════════════════════ -->
+<section class="bg-white py-28 px-6 border-y border-border-light" id="pricing">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-16">
+      <span class="font-body text-xs uppercase tracking-[0.2em] text-brand-dark font-extrabold mb-4 block" data-i18n="pricingLabel">Planes</span>
+      <h2 class="font-headline text-4xl md:text-5xl italic mb-4 text-text-primary" data-i18n="pricingTitle">Empieza gratis. Escala cuando quieras.</h2>
+      <p class="text-text-secondary font-medium" data-i18n="pricingSub">Invierte en tu capacidad de entender el mundo.</p>
+    </div>
+    <!-- Toggle mensual / anual -->
+    <div class="flex justify-center mb-10">
+      <div class="relative flex items-center bg-surface-dim rounded-xl p-1 gap-1">
+        <button id="toggle-monthly" onclick="setBilling('monthly')" class="billing-btn active px-6 py-2.5 rounded-lg text-sm font-bold transition-all" data-i18n="billingMonthly">Mensual</button>
+        <button id="toggle-yearly" onclick="setBilling('yearly')" class="billing-btn px-6 py-2.5 rounded-lg text-sm font-bold transition-all text-text-muted" data-i18n="billingYearly">Anual</button>
+        <span class="absolute -top-3 right-3 bg-brand text-white text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full" id="savings-badge" style="display:none;" data-i18n="billingSavings">Ahorra 33%</span>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8">
+      <!-- Free -->
+      <div class="bg-surface p-10 rounded-2xl border border-border-light flex flex-col">
+        <h3 class="font-headline text-2xl mb-2 text-text-primary" data-i18n="freePlanName">Prueba</h3>
+        <div class="text-4xl font-headline font-bold mb-8 text-text-primary">$0</div>
+        <ul class="space-y-4 mb-10 flex-1">
+          <li class="flex items-center gap-3 text-sm font-medium text-text-body"><span class="material-symbols-outlined text-brand text-xl">check_circle</span><span data-i18n="free1">3 verificaciones</span></li>
+          <li class="flex items-center gap-3 text-sm font-medium text-text-body"><span class="material-symbols-outlined text-brand text-xl">check_circle</span><span data-i18n="free2">Análisis completo incluido</span></li>
+          <li class="flex items-center gap-3 text-sm font-medium text-text-body"><span class="material-symbols-outlined text-brand text-xl">check_circle</span><span data-i18n="free3">Captura automática de artículos</span></li>
+          <li class="flex items-center gap-3 text-sm font-medium text-text-body"><span class="material-symbols-outlined text-brand text-xl">check_circle</span><span data-i18n="free4">Detección de sesgo editorial</span></li>
+          <li class="flex items-center gap-3 text-sm font-medium text-text-body"><span class="material-symbols-outlined text-brand text-xl">check_circle</span><span data-i18n="free5">Matriz de cobertura de fuentes</span></li>
+          <li class="flex items-center gap-3 text-sm font-medium text-text-body"><span class="material-symbols-outlined text-brand text-xl">check_circle</span><span data-i18n="free6">Selección manual de texto</span></li>
+        </ul>
+        <a href="#" class="w-full py-3.5 rounded-xl border-2 border-brand text-brand font-bold hover:bg-brand-50 transition-colors text-center chrome-store-link" data-i18n="freeBtn">Comenzar gratis</a>
+      </div>
+      <!-- Pro -->
+      <div class="bg-white p-10 rounded-2xl editorial-shadow ring-2 ring-brand relative flex flex-col">
+        <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 jewel-button text-white text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full" data-i18n="proBadge">Recomendado</div>
+        <h3 class="font-headline text-2xl mb-2 text-text-primary">Pro</h3>
+        <div class="text-4xl font-headline font-bold text-brand-dark mb-1" id="pro-price">$4.99</div>
+        <div class="text-sm text-text-muted font-semibold" id="pro-price-label">USD / mes</div>
+        <div class="text-xs text-brand font-bold mb-8 mt-0.5 h-4" id="pro-yearly-claim"></div>
+        <ul class="space-y-4 mb-10 flex-1">
+          <li class="flex items-center gap-3 text-sm font-medium text-text-body"><span class="material-symbols-outlined text-brand text-xl">check_circle</span><span data-i18n="pro1">Verificaciones ilimitadas</span></li>
+          <li class="flex items-center gap-3 text-sm font-medium text-text-body"><span class="material-symbols-outlined text-brand text-xl">check_circle</span><span data-i18n="pro2">Análisis completo + hallazgos clave</span></li>
+          <li class="flex items-center gap-3 text-sm font-medium text-text-body"><span class="material-symbols-outlined text-brand text-xl">check_circle</span><span data-i18n="pro3">Captura + selección manual de texto</span></li>
+          <li class="flex items-center gap-3 text-sm font-medium text-text-body"><span class="material-symbols-outlined text-brand text-xl">check_circle</span><span data-i18n="pro4">Detección de sesgo editorial</span></li>
+          <li class="flex items-center gap-3 text-sm font-medium text-text-body"><span class="material-symbols-outlined text-brand text-xl">check_circle</span><span data-i18n="pro5">Matriz de cobertura completa</span></li>
+          <li class="flex items-center gap-3 text-sm font-medium text-text-body"><span class="material-symbols-outlined text-brand text-xl">check_circle</span><span data-i18n="pro6">Compartir análisis</span></li>
+        </ul>
+        <a href="#" id="pro-cta-btn" class="w-full py-3.5 rounded-xl jewel-button text-white font-bold active:scale-95 transition-transform text-center" data-i18n="proBtn">Instalar y activar Pro</a>
+        <p class="text-xs text-text-muted text-center mt-3" data-i18n="proBtnHint">Instala la extensión → crea tu cuenta → activa Pro desde el popup</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     FINAL CTA
+     ═══════════════════════════════════════════ -->
+<section class="max-w-7xl mx-auto px-6 py-28 text-center">
+  <div class="bg-white rounded-[2rem] py-20 px-8 editorial-shadow relative overflow-hidden border border-border-light">
+    <!-- Decorative background blobs -->
+    <div class="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-brand-50 opacity-60 blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-16 -left-16 w-56 h-56 rounded-full bg-brand-50 opacity-40 blur-3xl pointer-events-none"></div>
+    <h2 class="font-headline text-4xl md:text-6xl mb-6 italic relative z-10 text-text-primary" data-i18n-html="ctaTitle">La próxima noticia que leas,<br/>léela <em class="text-brand-dark">completa</em>.</h2>
+    <p class="text-text-secondary mb-10 max-w-xl mx-auto relative z-10 text-lg leading-relaxed font-medium" data-i18n="ctaSub">Instala ClearLens en 10 segundos. Sin registro, sin datos personales. Solo tú y la información que mereces tener.</p>
+    <div class="relative z-10 flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="#" class="jewel-button text-white px-10 py-5 rounded-xl font-bold text-xl active:scale-95 transition-transform shadow-lg shadow-brand/25 inline-flex items-center gap-3 chrome-store-link justify-center">
+        <span class="material-symbols-outlined">add_circle</span>
+        <span data-i18n="ctaBtn">Agregar a Chrome — gratis</span>
+      </a>
+    </div>
+    <p class="mt-6 text-sm text-text-muted font-medium relative z-10" data-i18n="heroNote">Funciona en cualquier sitio.</p>
+  </div>
+</section>
+
+</main>
+
+<!-- Footer -->
+<footer class="border-t border-border-light bg-white">
+  <div class="flex flex-col md:flex-row justify-between items-center px-8 py-10 max-w-7xl mx-auto gap-6">
+    <div class="flex flex-col items-center md:items-start gap-2">
+      <span class="text-lg font-headline italic text-brand-deeper">ClearLens</span>
+      <p class="text-xs text-text-muted font-semibold" data-i18n="footerCopy">2026 ClearLens. Pensamiento crítico asistido.</p>
+    </div>
+    <div class="flex flex-wrap justify-center gap-x-8 gap-y-3">
+      <a class="text-xs text-text-muted hover:text-brand-dark transition-colors uppercase tracking-wide font-bold" href="privacy.html" data-i18n="footerPrivacy">Privacidad</a>
+      <a class="text-xs text-text-muted hover:text-brand-dark transition-colors uppercase tracking-wide font-bold" href="terms.html" data-i18n="footerTerms">Términos</a>
+      <button onclick="openContactModal()" class="text-xs text-text-muted hover:text-brand-dark transition-colors uppercase tracking-wide font-bold" data-i18n="footerContact">Contacto</button>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════
+     CONTACT MODAL
+════════════════════════════════════════════ -->
+<div id="contact-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display:none!important;">
+  <!-- Backdrop -->
+  <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeContactModal()"></div>
+  <!-- Card -->
+  <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 flex flex-col gap-5">
+    <!-- Close -->
+    <button onclick="closeContactModal()" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface transition-colors text-text-muted hover:text-text-primary">
+      <span class="material-symbols-outlined" style="font-size:20px;">close</span>
+    </button>
+    <!-- Header -->
+    <div>
+      <h3 class="font-headline text-2xl font-bold text-text-primary mb-1" data-i18n="contactTitle">Contáctanos</h3>
+      <p class="text-sm text-text-muted" data-i18n="contactSub">Te respondemos a la brevedad.</p>
+    </div>
+    <!-- Form -->
+    <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs font-bold text-text-secondary uppercase tracking-wide" data-i18n="contactName">Nombre</label>
+        <input id="contact-name" type="text" class="w-full px-4 py-3 rounded-xl border border-border-light bg-surface text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all" data-i18n-placeholder="contactNamePh">
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs font-bold text-text-secondary uppercase tracking-wide" data-i18n="contactEmail">Correo</label>
+        <input id="contact-email" type="email" class="w-full px-4 py-3 rounded-xl border border-border-light bg-surface text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all" data-i18n-placeholder="contactEmailPh">
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs font-bold text-text-secondary uppercase tracking-wide" data-i18n="contactReason">Motivo</label>
+        <textarea id="contact-reason" rows="4" class="w-full px-4 py-3 rounded-xl border border-border-light bg-surface text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-all resize-none" data-i18n-placeholder="contactReasonPh"></textarea>
+      </div>
+    </div>
+    <!-- Submit -->
+    <button onclick="submitContact()" class="w-full py-3.5 rounded-xl jewel-button text-white font-bold active:scale-95 transition-transform" data-i18n="contactSend">Enviar mensaje</button>
+  </div>
+</div>
+
+<script>
+// Chrome Web Store URL — update when published
+const CHROME_STORE_URL = "#";
+document.querySelectorAll('.chrome-store-link').forEach(el => { el.href = CHROME_STORE_URL; });
+
+// Stripe Price IDs
+const STRIPE_PRICE_MONTHLY = "price_1TKIfGRwAsz34cTNLmGn177J";
+const STRIPE_PRICE_YEARLY  = "price_1TKIgBRwAsz34cTNPU0hmrHI";
+const SUPABASE_URL = "https://bxxyospismedgdtrgxru.supabase.co";
+
+// Billing toggle
+let currentBilling = 'monthly';
+
+function setBilling(mode) {
+  currentBilling = mode;
+  const isYearly = mode === 'yearly';
+
+  // Toggle buttons
+  document.getElementById('toggle-monthly').classList.toggle('active', !isYearly);
+  document.getElementById('toggle-yearly').classList.toggle('active', isYearly);
+  document.getElementById('toggle-monthly').classList.toggle('text-text-muted', isYearly);
+  document.getElementById('toggle-yearly').classList.toggle('text-text-muted', !isYearly);
+
+  // Price display — siempre muestra equivalente mensual
+  document.getElementById('pro-price').textContent = isYearly ? '$3.33' : '$4.99';
+  document.getElementById('pro-price-label').textContent = 'USD / mes';
+
+  // Claim anual debajo del label
+  const claim = document.getElementById('pro-yearly-claim');
+  if (claim) claim.textContent = isYearly ? '· $39.99 facturado anualmente' : '';
+
+  // Savings badge
+  const badge = document.getElementById('savings-badge');
+  badge.style.display = isYearly ? 'block' : 'none';
+
+  // CTA button — instala la extensión primero, el upgrade se hace desde dentro
+  const btn = document.getElementById('pro-cta-btn');
+  btn.href = CHROME_STORE_URL;
+  btn.onclick = null;
+}
+
+function updatePriceLabel() {
+  // no-op: label is handled directly in setBilling()
+}
+
+// Init billing
+setBilling('monthly');
+
+// ── Contact modal ──────────────────────────────
+function openContactModal() {
+  const modal = document.getElementById('contact-modal');
+  modal.style.removeProperty('display');
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  // Apply current lang placeholders
+  applyContactPlaceholders();
+}
+
+function closeContactModal() {
+  document.getElementById('contact-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function applyContactPlaceholders() {
+  const lang = document.documentElement.lang === 'pt-BR' ? 'pt' : (document.documentElement.lang || 'es');
+  const s = i18n[lang] || i18n['es'];
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const k = el.getAttribute('data-i18n-placeholder');
+    if (s[k]) el.placeholder = s[k];
+  });
+}
+
+async function submitContact() {
+  const lang   = document.documentElement.lang === 'pt-BR' ? 'pt' : (document.documentElement.lang || 'es');
+  const s      = i18n[lang] || i18n['es'];
+  const name   = document.getElementById('contact-name').value.trim();
+  const email  = document.getElementById('contact-email').value.trim();
+  const reason = document.getElementById('contact-reason').value.trim();
+
+  if (!name || !email || !reason) {
+    alert(s.contactValidation || 'Por favor completa todos los campos.');
+    return;
+  }
+
+  const btn = document.querySelector('[onclick="submitContact()"]');
+  btn.disabled = true;
+  btn.textContent = s.contactSending || 'Enviando…';
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/contact`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, reason }),
+    });
+
+    if (!res.ok) throw new Error();
+
+    btn.textContent = s.contactSent || '¡Mensaje enviado!';
+    btn.style.background = '#064A3A';
+    setTimeout(() => {
+      closeContactModal();
+      // Reset form
+      document.getElementById('contact-name').value = '';
+      document.getElementById('contact-email').value = '';
+      document.getElementById('contact-reason').value = '';
+      btn.disabled = false;
+      btn.textContent = s.contactSend || 'Enviar mensaje';
+      btn.style.background = '';
+    }, 1800);
+  } catch {
+    btn.disabled = false;
+    btn.textContent = s.contactSend || 'Enviar mensaje';
+    alert(s.contactError || 'Error al enviar. Intenta de nuevo.');
+  }
+}
+
+// Close modal on Escape key
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeContactModal();
+});
+
+// Accordion logic
+function activatePanel(index) {
+  document.querySelectorAll('.acc-panel').forEach((panel, i) => {
+    panel.classList.toggle('active', i === index);
+    panel.classList.toggle('inactive', i !== index);
+  });
+}
+
+// i18n
+const i18n = {
+  es: {
+    navHow: "Cómo funciona", navFeatures: "Funcionalidades", navPricing: "Planes", navCta: "Instalar gratis",
+    heroBadge: "Extensión de Chrome",
+    heroTitle: 'No leas una noticia.<br/>Lee <em class="text-brand-dark">todas</em> las versiones.',
+    heroSub: "ClearLens compara tu noticia con múltiples fuentes en segundos. Detecta qué omiten, qué enfatizan y qué dicen diferente.",
+    heroCta: "Agregar a Chrome — gratis", heroCtaSecondary: "Ver cómo funciona",
+    heroNote: "Funciona en cualquier sitio.",
+    statSources: "Fuentes por análisis", statSpeed: "Tiempo de respuesta", statLangs: "Idiomas",
+    acc1Label: "Fuentes", acc1Tag: "Comparación cruzada", acc1Title: "Hasta 8 fuentes analizadas por noticia", acc1Desc: "Reuters, BBC, medios locales y más — todos comparados automáticamente.",
+    acc2Label: "Sesgo", acc2Tag: "Sesgo editorial", acc2Title: "Detecta el sesgo que los medios no declaran", acc2Desc: "Spectrum visual de izquierda a derecha con explicación del análisis.",
+    acc3Label: "Omisiones", acc3Tag: "Información faltante", acc3Title: "Lo que tu medio no te cuenta", acc3Desc: "Hallazgos clave que solo uno o dos medios reportaron.",
+    acc4Label: "Cobertura", acc4Tag: "Cobertura global", acc4Title: "Perspectiva local e internacional", acc4Desc: "Compara cómo se cubre la misma noticia en distintos países.",
+    acc5Label: "IA", acc5Tag: "IA de análisis", acc5Title: "ClearLens analiza, no adivina", acc5Desc: "Modelo de lenguaje de última generación entrenado para análisis periodístico.",
+    mockupSectionLabel: "La extensión, en acción", mockupSectionTitle: "Así se ve cuando abres ClearLens",
+    mockupSectionDesc: "En segundos tienes el puntaje de cobertura, las fuentes encontradas con su enfoque, el sesgo editorial detectado y los hallazgos que solo un medio reportó.",
+    mockupPoint1Title: "Puntaje de cobertura", mockupPoint1Desc: "Cuánto cubre tu fuente versus el consenso de medios disponibles.",
+    mockupPoint2Title: "Fuentes clasificadas", mockupPoint2Desc: "Coincide, enfoque distinto o información exclusiva — de un vistazo.",
+    mockupPoint3Title: "Espectro de sesgo", mockupPoint3Desc: "Visualización del posicionamiento editorial de la cobertura analizada.",
+    mockupScore: "Buena cobertura", outOf10: "de 10 posibles",
+    mockupSourcesTitle: "Fuentes encontradas",
+    tagMatch: "Coincide", tagMatch2: "Coincide", tagMatch3: "Coincide",
+    tagDifferent: "Enfoque distinto", tagDifferent2: "Enfoque distinto",
+    tagExclusive: "Info exclusiva", tagExclusive2: "Info exclusiva",
+    mockupSource1: "Confirma datos centrales, agrega impacto en PyMEs",
+    mockupSource2: "Se enfoca en críticas de la oposición, omite datos de recaudación",
+    mockupSource3: "Menciona cláusula de reinversión no reportada por otros medios",
+    mockupBias: "Sesgo editorial", biasLeft: "Izquierda", biasCenter: "Centro", biasRight: "Derecha",
+    mockupBiasExpl: "Cobertura mayoritariamente centrada, con leve énfasis en perspectiva gubernamental.",
+    back: "Volver", sourcesAnalyzed: "fuentes analizadas", tabAuto: "Automático", tabManual: "Manual",
+    viewDetail: "Ver análisis completo →",
+    howLabel: "Cómo funciona", howTitle: "Tres pasos. Cinco segundos. Todo el panorama.",
+    step1Title: "Lee cualquier noticia", step1Desc: "Navega como siempre. ClearLens funciona en cualquier sitio de noticias, blog o red social.",
+    step2Title: "Haz clic en ClearLens", step2Desc: "La extensión extrae el contenido automáticamente y busca la misma historia en otros medios.",
+    step3Title: "Ve lo que otros no muestran", step3Desc: "Descubre qué confirman otras fuentes, qué omiten, y cómo cambia el enfoque según el medio.",
+    featuresLabel: "Funcionalidades", featuresTitle: "No te decimos qué pensar. Te mostramos qué falta.",
+    feat1Title: "Comparación cruzada de fuentes", feat1Desc: "Encuentra automáticamente 3-8 medios que cubren la misma historia. Ve qué coincide, qué difiere y qué solo un medio reporta.",
+    feat2Title: "Detección de sesgo editorial", feat2Desc: "Analiza el tono, las fuentes citadas y lo que se enfatiza versus lo que se minimiza para mostrar la orientación del artículo.",
+    feat3Title: "Información que falta", feat3Desc: "Identifica datos relevantes que el artículo original omite pero que otros medios sí incluyen. La omisión también cuenta una historia.",
+    feat4Title: "Funciona en cualquier página", feat4Desc: "Noticias, blogs, posts de LinkedIn, hilos de X. Captura automática o selecciona cualquier texto y ClearLens lo verifica contra fuentes reales.",
+    feat4Mode: "Seleccionar texto", feat4ModeAuto: "Auto captura",
+    testimonialsLabel: "Testimonios", testimonialsTitle: "Lo que dicen los lectores",
+    test1: '"Ahora no puedo leer noticias sin ClearLens. Descubrí que el medio que más leo consistentemente omite la mitad del contexto."',
+    test1Name: "Mariana C.", test1Role: "Periodista, Santiago",
+    test2: '"Usarlo toma 5 segundos y cambia completamente cómo proceso la información. El sesgo editorial nunca había sido tan visible."',
+    test2Name: "Ricardo A.", test2Role: "Investigador, Buenos Aires",
+    test3: '"La herramienta que necesitaba para mis clases de pensamiento crítico. Mis estudiantes no pueden creer lo diferente que es la misma noticia."',
+    test3Name: "Laura P.", test3Role: "Docente universitaria, México",
+    pricingLabel: "Planes", pricingTitle: "Empieza gratis. Escala cuando quieras.", pricingSub: "Invierte en tu capacidad de entender el mundo.",
+    billingMonthly: "Mensual", billingYearly: "Anual", billingSavings: "Ahorra 33%",
+    priceProMonthly: "USD / mes", priceProYearly: "USD / año · equivale a $3.33/mes",
+    freePlanName: "Prueba",
+    free1: "3 verificaciones", free2: "Análisis completo incluido", free3: "Captura automática de artículos",
+    free4: "Detección de sesgo editorial", free5: "Matriz de cobertura de fuentes", free6: "Selección manual de texto",
+    freeBtn: "Comenzar gratis", proBadge: "Recomendado",
+    pro1: "Verificaciones ilimitadas", pro2: "Análisis completo + hallazgos clave", pro3: "Captura + selección manual de texto",
+    pro4: "Detección de sesgo editorial", pro5: "Matriz de cobertura completa", pro6: "Compartir análisis",
+    proBtn: "Instalar y activar Pro",
+    proBtnHint: "Instala la extensión → crea tu cuenta → activa Pro desde el popup",
+    ctaTitle: 'La próxima noticia que leas,<br/>léela <em class="text-brand-dark">completa</em>.',
+    ctaSub: "Instala ClearLens en 10 segundos. Sin registro, sin datos personales. Solo tú y la información que mereces tener.",
+    ctaBtn: "Agregar a Chrome — gratis",
+    footerCopy: "2026 ClearLens. Pensamiento crítico asistido.",
+    footerPrivacy: "Privacidad", footerTerms: "Términos", footerContact: "Contacto",
+    contactTitle: "Contáctanos", contactSub: "Te respondemos a la brevedad.",
+    contactName: "Nombre", contactNamePh: "Tu nombre",
+    contactEmail: "Correo", contactEmailPh: "tu@correo.com",
+    contactReason: "Motivo", contactReasonPh: "¿En qué podemos ayudarte?",
+    contactSend: "Enviar mensaje", contactSending: "Enviando…", contactSent: "¡Mensaje enviado!", contactError: "Error al enviar. Intenta de nuevo.", contactValidation: "Por favor completa todos los campos.",
+  },
+  en: {
+    navHow: "How it works", navFeatures: "Features", navPricing: "Pricing", navCta: "Install for free",
+    heroBadge: "Chrome Extension",
+    heroTitle: 'Don\'t read a story.<br/>Read <em class="text-brand-dark">every</em> version of it.',
+    heroSub: "ClearLens compares your news with multiple sources in seconds. Detects what's missing, what's emphasized, what's told differently.",
+    heroCta: "Add to Chrome — free", heroCtaSecondary: "See how it works",
+    heroNote: "Works on any website.",
+    statSources: "Sources per analysis", statSpeed: "Response time", statLangs: "Languages",
+    acc1Label: "Sources", acc1Tag: "Cross-comparison", acc1Title: "Up to 8 sources analyzed per story", acc1Desc: "Reuters, BBC, local outlets and more — all compared automatically.",
+    acc2Label: "Bias", acc2Tag: "Editorial bias", acc2Title: "Detects the bias media won't disclose", acc2Desc: "Visual spectrum from left to right with analysis explanation.",
+    acc3Label: "Omissions", acc3Tag: "Missing info", acc3Title: "What your outlet isn't telling you", acc3Desc: "Key findings reported by only one or two outlets.",
+    acc4Label: "Coverage", acc4Tag: "Global coverage", acc4Title: "Local and international perspective", acc4Desc: "Compare how the same story is covered across different countries.",
+    acc5Label: "AI", acc5Tag: "AI analysis", acc5Title: "ClearLens analyzes, doesn't guess", acc5Desc: "State-of-the-art language model trained for journalistic analysis.",
+    mockupSectionLabel: "The extension, in action", mockupSectionTitle: "This is what ClearLens looks like",
+    mockupSectionDesc: "In seconds you get the coverage score, sources with their angle, detected editorial bias, and findings only one outlet reported.",
+    mockupPoint1Title: "Coverage score", mockupPoint1Desc: "How much your source covers vs. the consensus across available outlets.",
+    mockupPoint2Title: "Classified sources", mockupPoint2Desc: "Matches, different angle, or exclusive info — at a glance.",
+    mockupPoint3Title: "Bias spectrum", mockupPoint3Desc: "Visualization of the editorial positioning of the analyzed coverage.",
+    mockupScore: "Good coverage", outOf10: "out of 10",
+    mockupSourcesTitle: "Sources found",
+    tagMatch: "Matches", tagMatch2: "Matches", tagMatch3: "Matches",
+    tagDifferent: "Different angle", tagDifferent2: "Different angle",
+    tagExclusive: "Exclusive info", tagExclusive2: "Exclusive info",
+    mockupSource1: "Confirms core data, adds impact on SMEs",
+    mockupSource2: "Focuses on opposition criticism, omits revenue data",
+    mockupSource3: "Mentions reinvestment clause not reported by other outlets",
+    mockupBias: "Editorial bias", biasLeft: "Left", biasCenter: "Center", biasRight: "Right",
+    mockupBiasExpl: "Mostly centrist coverage, with slight emphasis on the government's perspective.",
+    back: "Back", sourcesAnalyzed: "sources analyzed", tabAuto: "Automatic", tabManual: "Manual",
+    viewDetail: "View full analysis →",
+    howLabel: "How it works", howTitle: "Three steps. Five seconds. The full picture.",
+    step1Title: "Read any news article", step1Desc: "Browse as usual. ClearLens works on any news site, blog, or social platform.",
+    step2Title: "Click ClearLens", step2Desc: "The extension automatically extracts the content and searches for the same story across other outlets.",
+    step3Title: "See what others don't show", step3Desc: "Discover what other sources confirm, what they omit, and how framing changes depending on the outlet.",
+    featuresLabel: "Features", featuresTitle: "We don't tell you what to think. We show you what's missing.",
+    feat1Title: "Cross-source comparison", feat1Desc: "Automatically finds 3-8 outlets covering the same story. See what matches, what differs, and what only one source reports.",
+    feat2Title: "Editorial bias detection", feat2Desc: "Analyzes tone, cited sources, and what's emphasized vs. minimized to reveal the article's editorial leaning.",
+    feat3Title: "Missing information", feat3Desc: "Identifies relevant data the original article omits but other outlets include. What's left out tells a story too.",
+    feat4Title: "Works on any page", feat4Desc: "News, blogs, LinkedIn posts, X threads. Auto-capture or manually select any text and ClearLens verifies it against real sources.",
+    feat4Mode: "Select text", feat4ModeAuto: "Auto capture",
+    testimonialsLabel: "Testimonials", testimonialsTitle: "What readers are saying",
+    test1: '"I can\'t read news without ClearLens anymore. I discovered that my most-read outlet consistently omits half the context."',
+    test1Name: "Mariana C.", test1Role: "Journalist, Santiago",
+    test2: '"It takes 5 seconds and completely changes how I process information. Editorial bias has never been this visible."',
+    test2Name: "Ricardo A.", test2Role: "Researcher, Buenos Aires",
+    test3: '"The tool I needed for my critical thinking classes. My students can\'t believe how different the same story looks."',
+    test3Name: "Laura P.", test3Role: "University professor, Mexico City",
+    pricingLabel: "Pricing", pricingTitle: "Start free. Scale when you need to.", pricingSub: "Invest in your ability to understand the world.",
+    billingMonthly: "Monthly", billingYearly: "Annual", billingSavings: "Save 33%",
+    priceProMonthly: "USD / month", priceProYearly: "USD / year · equals $3.33/mo",
+    freePlanName: "Trial",
+    free1: "3 verifications", free2: "Full analysis included", free3: "Automatic article capture",
+    free4: "Editorial bias detection", free5: "Source coverage matrix", free6: "Manual text selection",
+    freeBtn: "Start for free", proBadge: "Recommended",
+    pro1: "Unlimited verifications", pro2: "Full analysis + key findings", pro3: "Capture + manual text selection",
+    pro4: "Editorial bias detection", pro5: "Full coverage matrix", pro6: "Share analysis reports",
+    proBtn: "Install and activate Pro",
+    proBtnHint: "Install the extension → create your account → activate Pro from the popup",
+    ctaTitle: 'The next story you read,<br/>read it <em class="text-brand-dark">completely</em>.',
+    ctaSub: "Install ClearLens in 10 seconds. No signup, no personal data. Just you and the information you deserve.",
+    ctaBtn: "Add to Chrome — free",
+    footerCopy: "2026 ClearLens. Assisted critical thinking.",
+    footerPrivacy: "Privacy", footerTerms: "Terms", footerContact: "Contact",
+    contactTitle: "Contact us", contactSub: "We'll get back to you shortly.",
+    contactName: "Name", contactNamePh: "Your name",
+    contactEmail: "Email", contactEmailPh: "you@email.com",
+    contactReason: "Message", contactReasonPh: "How can we help you?",
+    contactSend: "Send message", contactSending: "Sending…", contactSent: "Message sent!", contactError: "Error sending. Please try again.", contactValidation: "Please fill in all fields.",
+  },
+  pt: {
+    navHow: "Como funciona", navFeatures: "Funcionalidades", navPricing: "Planos", navCta: "Instalar grátis",
+    heroBadge: "Extensão para Chrome",
+    heroTitle: 'Não leia uma notícia.<br/>Leia <em class="text-brand-dark">todas</em> as versões.',
+    heroSub: "ClearLens compara sua notícia com múltiplas fontes em segundos. Detecta o que omitem, o que enfatizam e o que dizem de forma diferente.",
+    heroCta: "Adicionar ao Chrome — grátis", heroCtaSecondary: "Veja como funciona",
+    heroNote: "Funciona em qualquer site.",
+    statSources: "Fontes por análise", statSpeed: "Tempo de resposta", statLangs: "Idiomas",
+    acc1Label: "Fontes", acc1Tag: "Comparação cruzada", acc1Title: "Até 8 fontes analisadas por notícia", acc1Desc: "Reuters, BBC, meios locais e mais — todos comparados automaticamente.",
+    acc2Label: "Viés", acc2Tag: "Viés editorial", acc2Title: "Detecta o viés que os meios não declaram", acc2Desc: "Spectrum visual da esquerda à direita com explicação da análise.",
+    acc3Label: "Omissões", acc3Tag: "Informação faltante", acc3Title: "O que seu meio não te conta", acc3Desc: "Descobertas-chave reportadas por apenas um ou dois meios.",
+    acc4Label: "Cobertura", acc4Tag: "Cobertura global", acc4Title: "Perspectiva local e internacional", acc4Desc: "Compare como a mesma notícia é coberta em diferentes países.",
+    acc5Label: "IA", acc5Tag: "IA de análise", acc5Title: "ClearLens analisa, não adivinha", acc5Desc: "Modelo de linguagem de última geração treinado para análise jornalística.",
+    mockupSectionLabel: "A extensão, em ação", mockupSectionTitle: "Assim é o ClearLens quando você abre",
+    mockupSectionDesc: "Em segundos você tem a pontuação de cobertura, as fontes encontradas com seu enfoque, o viés editorial detectado e as descobertas que só um meio reportou.",
+    mockupPoint1Title: "Pontuação de cobertura", mockupPoint1Desc: "Quanto sua fonte cobre versus o consenso dos meios disponíveis.",
+    mockupPoint2Title: "Fontes classificadas", mockupPoint2Desc: "Coincide, enfoque distinto ou informação exclusiva — de relance.",
+    mockupPoint3Title: "Espectro de viés", mockupPoint3Desc: "Visualização do posicionamento editorial da cobertura analisada.",
+    mockupScore: "Boa cobertura", outOf10: "de 10 possíveis",
+    mockupSourcesTitle: "Fontes encontradas",
+    tagMatch: "Coincide", tagMatch2: "Coincide", tagMatch3: "Coincide",
+    tagDifferent: "Enfoque distinto", tagDifferent2: "Enfoque distinto",
+    tagExclusive: "Info exclusiva", tagExclusive2: "Info exclusiva",
+    mockupSource1: "Confirma dados centrais, adiciona impacto em PMEs",
+    mockupSource2: "Foca nas críticas da oposição, omite dados de arrecadação",
+    mockupSource3: "Menciona cláusula de reinvestimento não reportada por outros meios",
+    mockupBias: "Viés editorial", biasLeft: "Esquerda", biasCenter: "Centro", biasRight: "Direita",
+    mockupBiasExpl: "Cobertura majoritariamente centrada, com leve ênfase na perspectiva governamental.",
+    back: "Voltar", sourcesAnalyzed: "fontes analisadas", tabAuto: "Automático", tabManual: "Manual",
+    viewDetail: "Ver análise completa →",
+    howLabel: "Como funciona", howTitle: "Três passos. Cinco segundos. O panorama completo.",
+    step1Title: "Leia qualquer notícia", step1Desc: "Navegue normalmente. ClearLens funciona em qualquer site de notícias, blog ou rede social.",
+    step2Title: "Clique no ClearLens", step2Desc: "A extensão extrai o conteúdo automaticamente e busca a mesma história em outros meios.",
+    step3Title: "Veja o que outros não mostram", step3Desc: "Descubra o que outras fontes confirmam, o que omitem e como muda o enfoque dependendo do meio.",
+    featuresLabel: "Funcionalidades", featuresTitle: "Não dizemos o que pensar. Mostramos o que falta.",
+    feat1Title: "Comparação cruzada de fontes", feat1Desc: "Encontra automaticamente 3-8 meios cobrindo a mesma história. Veja o que coincide, o que difere e o que apenas um meio reporta.",
+    feat2Title: "Detecção de viés editorial", feat2Desc: "Analisa o tom, as fontes citadas e o que é enfatizado versus minimizado para mostrar a orientação do artigo.",
+    feat3Title: "Informação que falta", feat3Desc: "Identifica dados relevantes que o artigo original omite mas que outros meios incluem. A omissão também conta uma história.",
+    feat4Title: "Funciona em qualquer página", feat4Desc: "Notícias, blogs, posts do LinkedIn, threads do X. Captura automática ou selecione qualquer texto e ClearLens verifica contra fontes reais.",
+    feat4Mode: "Selecionar texto", feat4ModeAuto: "Auto captura",
+    testimonialsLabel: "Depoimentos", testimonialsTitle: "O que os leitores dizem",
+    test1: '"Não consigo mais ler notícias sem o ClearLens. Descobri que o meio que mais leio omite consistentemente metade do contexto."',
+    test1Name: "Mariana C.", test1Role: "Jornalista, Santiago",
+    test2: '"Leva 5 segundos e muda completamente como processo a informação. O viés editorial nunca foi tão visível."',
+    test2Name: "Ricardo A.", test2Role: "Pesquisador, Buenos Aires",
+    test3: '"A ferramenta que eu precisava para minhas aulas de pensamento crítico. Meus alunos não acreditam como a mesma notícia é tão diferente."',
+    test3Name: "Laura P.", test3Role: "Professora universitária, Cidade do México",
+    pricingLabel: "Planos", pricingTitle: "Comece grátis. Escale quando precisar.", pricingSub: "Invista na sua capacidade de entender o mundo.",
+    billingMonthly: "Mensal", billingYearly: "Anual", billingSavings: "Economize 33%",
+    priceProMonthly: "USD / mês", priceProYearly: "USD / ano · equivale a $3.33/mês",
+    freePlanName: "Teste",
+    free1: "3 verificações", free2: "Análise completa incluída", free3: "Captura automática de artigos",
+    free4: "Detecção de viés editorial", free5: "Matriz de cobertura de fontes", free6: "Seleção manual de texto",
+    freeBtn: "Começar grátis", proBadge: "Recomendado",
+    pro1: "Verificações ilimitadas", pro2: "Análise completa + descobertas-chave", pro3: "Captura + seleção manual de texto",
+    pro4: "Detecção de viés editorial", pro5: "Matriz de cobertura completa", pro6: "Compartilhar análises",
+    proBtn: "Instalar e ativar Pro",
+    proBtnHint: "Instale a extensão → crie sua conta → ative o Pro no popup",
+    ctaTitle: 'A próxima notícia que ler,<br/>leia <em class="text-brand-dark">completa</em>.',
+    ctaSub: "Instale ClearLens em 10 segundos. Sem cadastro, sem dados pessoais. Só você e a informação que merece ter.",
+    ctaBtn: "Adicionar ao Chrome — grátis",
+    footerCopy: "2026 ClearLens. Pensamento crítico assistido.",
+    footerPrivacy: "Privacidade", footerTerms: "Termos", footerContact: "Contato",
+    contactTitle: "Fale conosco", contactSub: "Respondemos em breve.",
+    contactName: "Nome", contactNamePh: "Seu nome",
+    contactEmail: "E-mail", contactEmailPh: "voce@email.com",
+    contactReason: "Mensagem", contactReasonPh: "Como podemos ajudar?",
+    contactSend: "Enviar mensagem", contactSending: "Enviando…", contactSent: "Mensagem enviada!", contactError: "Erro ao enviar. Tente novamente.", contactValidation: "Por favor preencha todos os campos.",
+  }
+};
+
+function setLang(lang) {
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    const isActive = btn.textContent.trim() === lang.toUpperCase();
+    btn.classList.toggle('active', isActive);
+    btn.classList.toggle('text-text-muted', !isActive);
+  });
+  document.documentElement.lang = lang === 'pt' ? 'pt-BR' : lang;
+  const s = i18n[lang];
+  if (!s) return;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (s[k] !== undefined) el.textContent = s[k];
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const k = el.getAttribute('data-i18n-html');
+    if (s[k] !== undefined) el.innerHTML = s[k];
+  });
+  // Actualizar el label de precio pro según el billing actual
+  updatePriceLabel();
+  // Actualizar placeholders del modal de contacto
+  applyContactPlaceholders();
+}
+</script>
+</body>
+</html>
