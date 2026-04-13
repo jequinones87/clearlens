@@ -70,7 +70,7 @@ tailwind.config = {
 .lang-btn { transition: all 0.15s; }
 .lang-btn.active { background: #064A3A; color: #fff; }
 
-/* Accordion hero */
+/* Accordion hero — desktop */
 .acc-panel {
   transition: flex 0.6s cubic-bezier(0.4, 0, 0.2, 1),
               min-width 0.6s cubic-bezier(0.4, 0, 0.2, 1),
@@ -113,6 +113,43 @@ tailwind.config = {
   transition: opacity 0.35s 0.1s, transform 0.35s 0.1s;
 }
 .acc-panel.inactive .caption { opacity: 0; transform: translateY(8px); pointer-events: none; }
+
+/* Accordion hero — mobile slider */
+@media (max-width: 1023px) {
+  #accordion {
+    position: relative;
+    height: 420px !important;
+  }
+  .acc-panel {
+    position: absolute !important;
+    inset: 0;
+    flex: none !important;
+    min-width: unset !important;
+    max-width: unset !important;
+    width: 100% !important;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+  .acc-panel.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .acc-panel.inactive {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .acc-panel .vertical-label { display: none; }
+  .acc-panel .caption {
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: auto !important;
+    padding: 1.5rem;
+  }
+  #acc-dots {
+    display: flex !important;
+  }
+}
 
 /* Popup mockup */
 .popup-shell {
@@ -245,7 +282,7 @@ tailwind.config = {
     </div>
 
     <!-- Right: interactive image accordion — ancho fijo para no afectar la columna izquierda -->
-    <div class="w-full lg:flex-1 flex items-center justify-center lg:justify-end overflow-hidden">
+    <div class="w-full lg:flex-1 flex flex-col items-center justify-center lg:justify-end overflow-hidden gap-4">
       <div class="flex flex-row gap-3 h-[480px] w-full max-w-[640px]" id="accordion">
 
         <!-- Panel 1 -->
@@ -323,6 +360,14 @@ tailwind.config = {
           </div>
         </div>
 
+      </div>
+      <!-- Mobile dots nav -->
+      <div id="acc-dots" class="hidden items-center gap-2">
+        <button onclick="mobileAccGo(0)" class="acc-dot w-2 h-2 rounded-full bg-brand transition-all"></button>
+        <button onclick="mobileAccGo(1)" class="acc-dot w-2 h-2 rounded-full bg-border-default transition-all"></button>
+        <button onclick="mobileAccGo(2)" class="acc-dot w-2 h-2 rounded-full bg-border-default transition-all"></button>
+        <button onclick="mobileAccGo(3)" class="acc-dot w-2 h-2 rounded-full bg-border-default transition-all"></button>
+        <button onclick="mobileAccGo(4)" class="acc-dot w-2 h-2 rounded-full bg-border-default transition-all"></button>
       </div>
     </div>
 
@@ -797,7 +842,7 @@ tailwind.config = {
 
 <script>
 // Chrome Web Store URL — update when published
-const CHROME_STORE_URL = "#";
+const CHROME_STORE_URL = "https://chromewebstore.google.com/detail/clearlens/giodkjkceodkfaipnhkbdlflkiooilpd";
 document.querySelectorAll('.chrome-store-link').forEach(el => { el.href = CHROME_STORE_URL; });
 
 // Stripe Price IDs
@@ -922,7 +967,37 @@ function activatePanel(index) {
     panel.classList.toggle('active', i === index);
     panel.classList.toggle('inactive', i !== index);
   });
+  updateAccDots(index);
 }
+
+function updateAccDots(index) {
+  document.querySelectorAll('.acc-dot').forEach((dot, i) => {
+    dot.classList.toggle('bg-brand', i === index);
+    dot.classList.toggle('w-4', i === index);
+    dot.classList.toggle('bg-border-default', i !== index);
+    dot.classList.toggle('w-2', i !== index);
+  });
+}
+
+function mobileAccGo(index) {
+  activatePanel(index);
+}
+
+// Touch swipe for mobile accordion
+(function() {
+  const acc = document.getElementById('accordion');
+  let startX = 0;
+  acc.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+  acc.addEventListener('touchend', e => {
+    const diff = startX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) < 40) return;
+    const panels = document.querySelectorAll('.acc-panel');
+    let current = 0;
+    panels.forEach((p, i) => { if (p.classList.contains('active')) current = i; });
+    const next = diff > 0 ? Math.min(current + 1, panels.length - 1) : Math.max(current - 1, 0);
+    activatePanel(next);
+  }, { passive: true });
+})();
 
 // i18n
 const i18n = {
