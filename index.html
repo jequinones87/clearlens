@@ -85,7 +85,8 @@ tailwind.config = {
 .acc-panel img {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
-  object-fit: cover;
+  -o-object-fit: cover;
+     object-fit: cover;
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .acc-panel:hover img { transform: scale(1.04); }
@@ -720,7 +721,7 @@ tailwind.config = {
       <div class="relative flex items-center bg-surface-dim rounded-xl p-1 gap-1">
         <button id="toggle-monthly" onclick="setBilling('monthly')" class="billing-btn active px-6 py-2.5 rounded-lg text-sm font-bold transition-all" data-i18n="billingMonthly">Mensual</button>
         <button id="toggle-yearly" onclick="setBilling('yearly')" class="billing-btn px-6 py-2.5 rounded-lg text-sm font-bold transition-all text-text-muted" data-i18n="billingYearly">Anual</button>
-        <span class="absolute -top-3 right-3 bg-brand text-white text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full" id="savings-badge" style="display:none;" data-i18n="billingSavings">Ahorra 33%</span>
+        <span class="absolute -top-3 right-3 bg-brand text-white text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full" id="savings-badge" style="display:none;" data-i18n="billingSavings">Ahorra 40%</span>
       </div>
     </div>
 
@@ -743,7 +744,7 @@ tailwind.config = {
       <div class="bg-white p-10 rounded-2xl editorial-shadow ring-2 ring-brand relative flex flex-col">
         <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 jewel-button text-white text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full" data-i18n="proBadge">Recomendado</div>
         <h3 class="font-headline text-2xl mb-2 text-text-primary">Pro</h3>
-        <div class="text-4xl font-headline font-bold text-brand-dark mb-1" id="pro-price">$4.99</div>
+        <div class="text-4xl font-headline font-bold text-brand-dark mb-1" id="pro-price">$6.99</div>
         <div class="text-sm text-text-muted font-semibold" id="pro-price-label">USD / mes</div>
         <div class="text-xs text-brand font-bold mb-8 mt-0.5 h-4" id="pro-yearly-claim"></div>
         <ul class="space-y-4 mb-10 flex-1">
@@ -859,12 +860,12 @@ function setBilling(mode) {
   document.getElementById('toggle-yearly').classList.toggle('text-text-muted', !isYearly);
 
   // Price display — siempre muestra equivalente mensual
-  document.getElementById('pro-price').textContent = isYearly ? '$3.33' : '$4.99';
+  document.getElementById('pro-price').textContent = isYearly ? '$4.17' : '$6.99';
   document.getElementById('pro-price-label').textContent = 'USD / mes';
 
   // Claim anual debajo del label
   const claim = document.getElementById('pro-yearly-claim');
-  if (claim) claim.textContent = isYearly ? '· $39.99 facturado anualmente' : '';
+  if (claim) claim.textContent = isYearly ? '· $49.99 facturado anualmente' : '';
 
   // Savings badge
   const badge = document.getElementById('savings-badge');
@@ -1044,8 +1045,8 @@ const i18n = {
     test3: '"La herramienta que necesitaba para mis clases de pensamiento crítico. Mis estudiantes no pueden creer lo diferente que es la misma noticia."',
     test3Name: "Laura P.", test3Role: "Docente universitaria, México",
     pricingLabel: "Planes", pricingTitle: "Empieza gratis. Escala cuando quieras.", pricingSub: "Invierte en tu capacidad de entender el mundo.",
-    billingMonthly: "Mensual", billingYearly: "Anual", billingSavings: "Ahorra 33%",
-    priceProMonthly: "USD / mes", priceProYearly: "USD / año · equivale a $3.33/mes",
+    billingMonthly: "Mensual", billingYearly: "Anual", billingSavings: "Ahorra 40%",
+    priceProMonthly: "USD / mes", priceProYearly: "USD / año · equivale a $4.17/mes",
     freePlanName: "Prueba",
     free1: "3 verificaciones", free2: "Análisis completo incluido", free3: "Captura automática de artículos",
     free4: "Detección de sesgo editorial", free5: "Matriz de cobertura de fuentes", free6: "Selección manual de texto",
@@ -1113,8 +1114,8 @@ const i18n = {
     test3: '"The tool I needed for my critical thinking classes. My students can\'t believe how different the same story looks."',
     test3Name: "Laura P.", test3Role: "University professor, Mexico City",
     pricingLabel: "Pricing", pricingTitle: "Start free. Scale when you need to.", pricingSub: "Invest in your ability to understand the world.",
-    billingMonthly: "Monthly", billingYearly: "Annual", billingSavings: "Save 33%",
-    priceProMonthly: "USD / month", priceProYearly: "USD / year · equals $3.33/mo",
+    billingMonthly: "Monthly", billingYearly: "Annual", billingSavings: "Save 40%",
+    priceProMonthly: "USD / month", priceProYearly: "USD / year · equals $4.17/mo",
     freePlanName: "Trial",
     free1: "3 verifications", free2: "Full analysis included", free3: "Automatic article capture",
     free4: "Editorial bias detection", free5: "Source coverage matrix", free6: "Manual text selection",
@@ -1182,8 +1183,8 @@ const i18n = {
     test3: '"A ferramenta que eu precisava para minhas aulas de pensamento crítico. Meus alunos não acreditam como a mesma notícia é tão diferente."',
     test3Name: "Laura P.", test3Role: "Professora universitária, Cidade do México",
     pricingLabel: "Planos", pricingTitle: "Comece grátis. Escale quando precisar.", pricingSub: "Invista na sua capacidade de entender o mundo.",
-    billingMonthly: "Mensal", billingYearly: "Anual", billingSavings: "Economize 33%",
-    priceProMonthly: "USD / mês", priceProYearly: "USD / ano · equivale a $3.33/mês",
+    billingMonthly: "Mensal", billingYearly: "Anual", billingSavings: "Economize 40%",
+    priceProMonthly: "USD / mês", priceProYearly: "USD / ano · equivale a $4,17/mês",
     freePlanName: "Teste",
     free1: "3 verificações", free2: "Análise completa incluída", free3: "Captura automática de artigos",
     free4: "Detecção de viés editorial", free5: "Matriz de cobertura de fontes", free6: "Seleção manual de texto",
