@@ -11,12 +11,12 @@ tailwind.config = {
   theme: {
     extend: {
       colors: {
-        "brand": "#0F6E56",
-        "brand-dark": "#064A3A",
-        "brand-light": "#12876A",
-        "brand-50": "#E1F5EE",
-        "text-muted": "#6B7872",
-        "border-light": "#D4DAD7",
+        "brand": "#0C604C",
+        "brand-dark": "#084034",
+        "brand-light": "#2C8068",
+        "brand-50": "#E0F5EE",
+        "text-muted": "#767C78",
+        "border-light": "#E4E4DF",
       },
       fontFamily: {
         "headline": ["Newsreader", "serif"],
@@ -37,11 +37,9 @@ tailwind.config = {
 <header class="border-b border-border-light bg-white sticky top-0 z-10">
   <div class="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
     <a href="index.html" class="flex items-center gap-2 text-brand-dark hover:text-brand transition-colors">
-      <div class="w-7 h-7 rounded-lg bg-brand flex items-center justify-center">
-        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
-        </svg>
-      </div>
+      <svg viewBox="0 0 100 100" class="w-7 h-7" fill="#0C604C" aria-hidden="true">
+        <path d="M 52.25 7.06 A 43 43 0 0 1 86.06 26.58 L 66.98 49.11 Z"/><path d="M 88.31 30.48 A 43 43 0 0 1 88.31 69.52 L 59.26 64.26 Z"/><path d="M 86.06 73.42 A 43 43 0 0 1 52.25 92.94 L 42.28 65.15 Z"/><path d="M 47.75 92.94 A 43 43 0 0 1 13.94 73.42 L 33.02 50.89 Z"/><path d="M 11.69 69.52 A 43 43 0 0 1 11.69 30.48 L 40.74 35.74 Z"/><path d="M 13.94 26.58 A 43 43 0 0 1 47.75 7.06 L 57.72 34.85 Z"/>
+      </svg>
       <span class="font-headline italic text-lg font-semibold">ClearLens</span>
     </a>
     <a href="index.html" class="text-sm text-text-muted hover:text-brand-dark transition-colors">← Inicio</a>
